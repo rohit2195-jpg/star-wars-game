@@ -1,5 +1,5 @@
 #include "core/Game.h"
-#include "scene/TestScene.h"
+#include "scene/GameplayScene.h"
 #include <memory>
 
 int main(int /*argc*/, char* /*argv*/[]) {
@@ -9,7 +9,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
         return 1;
     }
 
-    game.getScenes().push(std::make_unique<TestScene>());
+    game.getScenes().push(std::make_unique<GameplayScene>());
 
     game.run();
 
