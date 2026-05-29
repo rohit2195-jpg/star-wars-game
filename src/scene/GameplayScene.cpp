@@ -5,6 +5,12 @@
 void GameplayScene::onEnter() {
     player = std::make_unique<Player>();
 
+    // Load sprite sheet (PNG via SDL2_image, cached by AssetManager)
+    SDL_Texture* tex = assets.getTexture("assets/sprites/roan_sheet.png");
+    if (tex && player->sprite) {
+        player->sprite->texture = tex;
+    }
+
     camera.target = player.get();
     camera.zoom   = 2.0f;
 

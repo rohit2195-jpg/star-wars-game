@@ -9,7 +9,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
         return 1;
     }
 
-    game.getScenes().push(std::make_unique<GameplayScene>());
+    game.getScenes().push(std::make_unique<GameplayScene>(game.getAssets()));
 
     game.run();
 

@@ -18,27 +18,33 @@ Player::Player() {
     physics->maxFallSpeed = 800.0f;
 
     // AABB: centered on transform, bottom at transform.y + 48
-    collider->offsetX = -16.0f;
-    collider->offsetY =   0.0f;
-    collider->width   =  32.0f;
-    collider->height  =  48.0f;
+    // Sheet: roan_sheet.png  640x448  (10 cols × 7 rows, 64×64 per frame)
+    // Row 0=Idle  Row 1=Walk  Row 2=Run  Row 3=Jump
+    // Row 4=JumpAttack(→land) Row 5=Attack(→roll) Row 6=Dead
+    static constexpr int FW = 64;   // frame width
+    static constexpr int FH = 64;   // frame height
 
-    // Sprite origin offset so feet align with transform position
-    sprite->drawOffsetX = -24;
-    sprite->drawOffsetY =   0;
-    sprite->drawWidth   =  48;
-    sprite->drawHeight  =  48;
-    sprite->srcRect     = {0, 0, 48, 48};
+    collider->offsetX = -14.0f;
+    collider->offsetY =  -2.0f;
+    collider->width   =  28.0f;
+    collider->height  =  50.0f;
 
-    // Animation clips: sheetRow, frameCount, frameWidth, frameHeight, fps, loop
-    animator->addClip("idle",      {0, 4, 48, 48,  6.0f, true });
-    animator->addClip("walk",      {1, 6, 48, 48,  8.0f, true });
-    animator->addClip("run",       {2, 8, 48, 48, 12.0f, true });
-    animator->addClip("jump_rise", {3, 2, 48, 48,  8.0f, false});
-    animator->addClip("jump_apex", {4, 1, 48, 48,  4.0f, false});
-    animator->addClip("jump_fall", {5, 2, 48, 48,  8.0f, true });
-    animator->addClip("jump_land", {6, 3, 48, 48, 12.0f, false});
-    animator->addClip("roll",      {7, 8, 48, 48, 24.0f, false});
+    // Center sprite on transform; align feet to bottom
+    sprite->drawOffsetX = -FW / 2;
+    sprite->drawOffsetY = -FH;
+    sprite->drawWidth   =  FW;
+    sprite->drawHeight  =  FH;
+    sprite->srcRect     = {0, 0, FW, FH};
+
+    // Animation clips: sheetRow, frameCount, frameW, frameH, fps, loop
+    animator->addClip("idle",      {0, 10, FW, FH,  8.0f, true });
+    animator->addClip("walk",      {1, 10, FW, FH,  8.0f, true });
+    animator->addClip("run",       {2, 10, FW, FH, 12.0f, true });
+    animator->addClip("jump_rise", {3,  5, FW, FH,  8.0f, false});
+    animator->addClip("jump_apex", {3,  3, FW, FH,  6.0f, false});
+    animator->addClip("jump_fall", {3,  5, FW, FH,  8.0f, true });
+    animator->addClip("jump_land", {4,  6, FW, FH, 12.0f, false});
+    animator->addClip("roll",      {5, 10, FW, FH, 20.0f, false});
 
     animator->play("idle");
 }
