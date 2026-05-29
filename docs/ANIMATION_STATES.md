@@ -27,37 +27,52 @@ State transitions are triggered by the entity that owns the animator (e.g., `Pla
 
 ---
 
+## Animation Philosophy
+
+**Target quality: Hollow Knight / Dead Cells fluidity.** Every action needs three components:
+1. **Anticipation** — the wind-up (crouch before jump, draw-back before swing)
+2. **Strong keyframe** — the peak of the action (fully extended saber, apex of jump)
+3. **Follow-through** — the settle (saber arc completing, cape catching up, landing squash)
+
+This is what separates fluid indie-quality animation from stiff retro pixel art. Never cut these — especially on attacks. When in doubt, add a frame rather than remove one.
+
+**Squash and stretch:** Apply subtly on jump landings (squash) and jump launches (stretch). Roan is a Jedi — his movement should feel slightly superhuman without breaking the pixel art aesthetic.
+
+---
+
 ## Roan Novachez — Animation States
 
-**Sprite sheet dimensions:** 48×48 px per frame (character + lightsaber clearance)
+**Sprite sheet dimensions:** 48×48 px per frame (character + full lightsaber swing clearance)
+
+> Frame counts reflect the target for a fluid feel. Placeholder art can use fewer frames initially — bump to target counts when final sprites are drawn.
 
 | Row | State Name | Frames | FPS | Loop | Trigger |
 |---|---|---|---|---|---|
-| 0 | `idle` | 4 | 8 | yes | No input, grounded |
-| 1 | `walk` | 8 | 12 | yes | Moving, grounded, < run speed |
-| 2 | `run` | 8 | 16 | yes | Moving, grounded, ≥ run speed |
-| 3 | `jump_start` | 3 | 18 | no | Jump input pressed |
-| 4 | `jump_rise` | 2 | 6 | yes | Ascending (velocity Y < 0) |
-| 5 | `jump_apex` | 2 | 6 | yes | Near apex (|velocity Y| < 2) |
-| 6 | `jump_fall` | 2 | 8 | yes | Descending (velocity Y > 0) |
-| 7 | `jump_land` | 3 | 20 | no | Landing; transitions to idle/run |
-| 8 | `roll` | 6 | 30 | no | Roll input |
-| 9 | `crouch_idle` | 2 | 6 | yes | Crouching, no input |
-| 10 | `crouch_walk` | 6 | 10 | yes | Crouching + moving |
-| 11 | `slide` | 4 | 20 | no | Slide input (run + crouch) |
-| 12 | `wall_stick` | 2 | 6 | yes | Touching wall, airborne |
-| 13 | `wall_jump` | 3 | 18 | no | Jump from wall |
-| 14 | `double_jump` | 4 | 20 | no | Double jump in air |
-| 15 | `attack_light_1` | 5 | 24 | no | Light attack (1st in chain) |
-| 16 | `attack_light_2` | 5 | 24 | no | Light attack (2nd in chain) |
-| 17 | `attack_light_3` | 6 | 24 | no | Light attack (3rd in chain) |
-| 18 | `attack_light_4` | 8 | 20 | no | Spin (4th in chain) |
-| 19 | `attack_heavy` | 8 | 16 | no | Heavy attack |
-| 20 | `attack_kick` | 4 | 20 | no | Kick (down + light) |
-| 21 | `attack_heavy_finisher` | 7 | 18 | no | Heavy finisher (Z Z X combo) |
-| 22 | `air_attack` | 5 | 20 | no | Light attack while airborne |
-| 23 | `parry` | 3 | 30 | no | Successful parry |
-| 24 | `block` | 2 | 6 | yes | Holding block (passive) |
+| 0 | `idle` | 8 | 8 | yes | No input, grounded — subtle breathing + cape drift |
+| 1 | `walk` | 10 | 12 | yes | Moving, grounded, < run speed |
+| 2 | `run` | 10 | 16 | yes | Moving, grounded, ≥ run speed — lean forward, cape trailing |
+| 3 | `jump_start` | 5 | 20 | no | Jump input — crouch anticipation + launch stretch |
+| 4 | `jump_rise` | 3 | 8 | yes | Ascending (velocity Y < 0) |
+| 5 | `jump_apex` | 3 | 6 | yes | Near apex (|velocity Y| < 2) — body tucks briefly |
+| 6 | `jump_fall` | 3 | 8 | yes | Descending (velocity Y > 0) |
+| 7 | `jump_land` | 5 | 22 | no | Landing squash + recovery — transitions to idle/run |
+| 8 | `roll` | 8 | 30 | no | Roll input — full tuck and extend |
+| 9 | `crouch_idle` | 4 | 6 | yes | Crouching, no input |
+| 10 | `crouch_walk` | 8 | 10 | yes | Crouching + moving |
+| 11 | `slide` | 6 | 22 | no | Slide input (run + crouch) |
+| 12 | `wall_stick` | 3 | 6 | yes | Touching wall, airborne — slight grip animation |
+| 13 | `wall_jump` | 5 | 20 | no | Jump from wall — push-off anticipation |
+| 14 | `double_jump` | 6 | 22 | no | Double jump — Force burst effect + body stretch |
+| 15 | `attack_light_1` | 10 | 24 | no | Light attack 1 — draw-back → slash → follow-through |
+| 16 | `attack_light_2` | 10 | 24 | no | Light attack 2 — opposite arc |
+| 17 | `attack_light_3` | 12 | 24 | no | Light attack 3 — forward thrust with weight |
+| 18 | `attack_light_4` | 14 | 20 | no | Spin — 360° arc, cape follows |
+| 19 | `attack_heavy` | 14 | 16 | no | Heavy — long wind-up, big swing, long follow-through |
+| 20 | `attack_kick` | 6 | 22 | no | Kick — snap out, snap back |
+| 21 | `attack_heavy_finisher` | 12 | 18 | no | Heavy finisher (Z Z X) — launching overhead |
+| 22 | `air_attack` | 10 | 22 | no | Air light — downward slash arc |
+| 23 | `parry` | 5 | 30 | no | Parry — snap block + recoil |
+| 24 | `block` | 3 | 6 | yes | Holding block — guarded stance |
 | 25 | `hit_light` | 3 | 20 | no | Receiving light damage |
 | 26 | `hit_heavy` | 5 | 16 | no | Receiving heavy damage (knockback) |
 | 27 | `stagger` | 6 | 12 | no | Staggered by Force Push or parry |

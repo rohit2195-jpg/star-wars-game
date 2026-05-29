@@ -191,10 +191,14 @@ star-wars-game/
 
 ## Art Direction
 
-- **Style:** 2D pixel art (16×16 or 32×32 tile grid)
-- **Palette:** Star Wars environments — moonscapes, Jedi ruins, Sith catacombs, mechanical interiors
+**Target aesthetic:** Pokémon-quality pixel art environments (rich, layered, detailed tilesets) with Hollow Knight / Dead Cells-level character animation fluidity. Indie craftsmanship — not retro minimalism.
+
+- **Tile grid:** 16×16 px tiles; characters are 48×48 px (Roan) down to 32×32 px (droids)
+- **Environments:** 4-layer depth system (sky → background → midground → foreground overlay). Each chapter has a distinct color palette signature — see `docs/ART_STYLE.md`
+- **Characters:** High frame-count animations (8–16 frames on attacks, not 3–5). Anticipation + keyframe + follow-through on every action. Readable silhouettes and color coding at a glance.
 - **Cutscenes:** Pre-rendered comic-panel PNG strips (true to the book's visual style)
-- **Source:** Free/open packs from itch.io and OpenGameArt, progressively customized
+- **Atmosphere:** Simulated via background color tinting, animated particles, and additive-blend lightsaber glow — no dynamic lighting engine needed
+- **Source:** Free/open packs from itch.io and OpenGameArt as a base; customized to fit the aesthetic. Full spec: `docs/ART_STYLE.md`
 
 ---
 
