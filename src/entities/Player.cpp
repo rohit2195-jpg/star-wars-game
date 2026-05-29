@@ -16,22 +16,24 @@ Player::Player() {
 
     physics->gravity      = 1800.0f;
     physics->maxFallSpeed = 800.0f;
+    physics->grounded     = true;  // start on floor — avoids a one-frame fall + landing anim on spawn
 
-    // AABB: centered on transform, bottom at transform.y + 48
     // Sheet: roan_sheet.png  640x448  (10 cols × 7 rows, 64×64 per frame)
     // Row 0=Idle  Row 1=Walk  Row 2=Run  Row 3=Jump
     // Row 4=JumpAttack(→land) Row 5=Attack(→roll) Row 6=Dead
-    static constexpr int FW = 64;   // frame width
-    static constexpr int FH = 64;   // frame height
+    static constexpr int FW = 64;
+    static constexpr int FH = 64;
 
+    // AABB: narrow box centered on transform.x, bottom flush with floor
     collider->offsetX = -14.0f;
     collider->offsetY =  -2.0f;
     collider->width   =  28.0f;
     collider->height  =  50.0f;
 
-    // Center sprite on transform; align feet to bottom
-    sprite->drawOffsetX = -FW / 2;
-    sprite->drawOffsetY = -FH;
+    // Sprite: center horizontally, align sprite bottom to collider bottom
+    // drawOffsetY = collider.offsetY + collider.height - FH = -2 + 50 - 64 = -16
+    sprite->drawOffsetX = -(FW / 2);
+    sprite->drawOffsetY = (int)(collider->offsetY + collider->height) - FH; // = -16
     sprite->drawWidth   =  FW;
     sprite->drawHeight  =  FH;
     sprite->srcRect     = {0, 0, FW, FH};
@@ -41,9 +43,9 @@ Player::Player() {
     animator->addClip("walk",      {1, 10, FW, FH,  8.0f, true });
     animator->addClip("run",       {2, 10, FW, FH, 12.0f, true });
     animator->addClip("jump_rise", {3,  5, FW, FH,  8.0f, false});
-    animator->addClip("jump_apex", {3,  3, FW, FH,  6.0f, false});
+    animator->addClip("jump_apex", {3,  3, FW, FH,  6.0f, true }); // loop=true: apex is brief, avoid freeze
     animator->addClip("jump_fall", {3,  5, FW, FH,  8.0f, true });
-    animator->addClip("jump_land", {4,  6, FW, FH, 12.0f, false});
+    animator->addClip("jump_land", {4,  4, FW, FH, 16.0f, false}); // 0.25s land
     animator->addClip("roll",      {5, 10, FW, FH, 20.0f, false});
 
     animator->play("idle");
@@ -120,6 +122,10 @@ void Player::updateJump(float dt, const Input& input) {
         if (jumpBuffer < 0.0f) jumpBuffer = 0.0f;
     }
 
+    // Clear jumpHeld when grounded BEFORE the canJump check so that setting
+    // jumpHeld=true on the jump frame isn't immediately overwritten.
+    if (physics->grounded) jumpHeld = false;
+
     bool canJump = (physics->grounded || coyoteTimer > 0.0f) && jumpBuffer > 0.0f;
     if (canJump) {
         physics->velY  = -JUMP_VELOCITY;
@@ -133,7 +139,6 @@ void Player::updateJump(float dt, const Input& input) {
         physics->velY = -MIN_JUMP_VEL;
         jumpHeld      = false;
     }
-    if (physics->grounded) jumpHeld = false;
 }
 
 void Player::updateRoll(float dt, const Input& input) {
